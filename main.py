@@ -17,7 +17,7 @@ class Automate:
         x.field_names = ["i/o", "state"] + alphaListe(self.alphabet)
 
         for i in range(self.nb_state):  # Pour chaque état
-            io=""
+            io = ""
             if i in self.lst_init:
                 io += "i"
             if i in self.lst_term:
@@ -53,16 +53,17 @@ class Automate:
 
     def addState(self):
         self.nb_state += 1
-        self.lst_trans.append([]) # car sinon out of range
+        self.lst_trans.append([])  # car sinon out of range
         return self.nb_state
-    def addInput(self,state):
+
+    def addInput(self, state):
         if state not in self.lst_init:
             self.nb_init += 1
             self.lst_init.append(state)
         else:
             print("déjà initial")
 
-    def addOutput(self,state):
+    def addOutput(self, state):
         if state not in self.lst_term:
             self.nb_term += 1
             self.lst_term.append(state)
@@ -73,8 +74,10 @@ class Automate:
         if self.nb_init != 1:
             return False
         entrant_states = []
+
         for trans in self.lst_trans:
-            entrant_states.append(int(trans[2]))
+            for elm in trans:
+                entrant_states.append(int(elm[2]))
 
         # Vérifier que l'unique état initial n'est pas une cible de transition
         if self.lst_init[0] in entrant_states:
@@ -88,7 +91,7 @@ class Automate:
             print("Automate déjà standardisé")
             return
 
-        c_trans=[]
+        c_trans = []
         c_state = self.addState()
 
         #  Récupération des transitions qui concerne les états initiaux
@@ -99,13 +102,12 @@ class Automate:
 
         self.nb_trans += len(c_trans)
         self.nb_init = 1
-        self.lst_init = [c_state-1]
+        self.lst_init = [c_state - 1]
 
         #  Modification des états de départ des transitions
         for i in range(len(c_trans)):
             c_trans[i][0] = str(c_state)
-        self.lst_trans[c_state-1] = c_trans
-
+        self.lst_trans[c_state - 1] = c_trans
 
     def isComplete(self):
         for state_trans in self.lst_trans:
@@ -116,14 +118,16 @@ class Automate:
                 return False
         return True
 
-    def addTrans(self,state,letter,dest):
-        new_trans=[state,letter,dest]
+    def addTrans(self, state, letter, dest):
+        new_trans = [state, letter, dest]
         if new_trans in self.lst_trans[state]:
-            print("Transition déjà éxistente")
+            print("Transition déjà existante")
             return
 
         self.nb_trans += 1
         self.lst_trans[state].append(new_trans)
+
+
 def str_to_int(lst):
     int_liste = []
     for elm in lst:
@@ -174,12 +178,7 @@ def importAutomate(nom_fichier):
 if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
-    print(newAuto.isDeter())
     print(newAuto.isStandard())
-    print(newAuto.isComplete())
-    newAuto.show()
-    newAuto.addInput(3)
-    newAuto.addOutput(0)
-    newAuto.show()
     newAuto.standardize()
     newAuto.show()
+    print(newAuto.isStandard())

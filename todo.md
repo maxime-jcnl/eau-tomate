@@ -1,12 +1,13 @@
 # Todo List Automate
 
-## Fonctionnalités à implémenter
+## Fonctionnalités à implémenter (pour avoir 10)
 - [x] Lecture et affichage de l'automate
 - [x] Fonction de verification isDeter
 - [x] Fonction isStandard
 - [x] Fonction isComplete
-- [ ] Fonction standardisation
+- [x] Fonction standardisation
 - [ ] Fonction determinisation
+## Fonctionnalités avancées (pour avoir 16)
 - [ ] Fonction de minimisation
 - [ ] Fonction de test de reconnaissance de mots
 - [ ] Fonction de génération de l'automate complémentaire
