@@ -2,9 +2,9 @@ from prettytable import PrettyTable
 
 
 class Automate:
-    def __init__(self, alphabet, nb_etats, nb_init, lst_init, nb_term, lst_term, nb_trans, lst_trans):
+    def __init__(self, alphabet, nb_state, nb_init, lst_init, nb_term, lst_term, nb_trans, lst_trans):
         self.alphabet = alphabet
-        self.nb_etats = nb_etats
+        self.nb_state = nb_state
         self.nb_init = nb_init
         self.lst_init = lst_init
         self.nb_term = nb_term
@@ -13,47 +13,51 @@ class Automate:
         self.lst_trans = lst_trans
 
     def show(self):
+        global trans_state_liste
         x = PrettyTable()
-        x.field_names = ["i/o", "state"] + alphaliste(self.alphabet)
+        x.field_names = ["i/o", "state"] + alphaListe(self.alphabet)
 
-        for i in range(self.nb_etats):  #On parcourt pour chaque état existant
+        for i in range(self.nb_state):  # On parcourt pour chaque état existant
 
-            # Vérification etat initial final
-            if (i in self.lst_init):
+            # Vérification état initial final
+            if i in self.lst_init:
                 io = "i"
             elif i in self.lst_term:
                 io = "o"
             else:
                 io = " "
-            addedrow=False
-            for trans in self.lst_trans: # On parcourt toute la liste de transition
+            added_row = False
+            for trans in self.lst_trans:  # On parcourt toute la liste de transition
 
                 trans_state_liste = [' '] * self.alphabet
-                if trans[0]==str(i):  # Si une transition est liée à l'état observé
-                    trans_state_liste[alph_to_num(trans[1])]=str(trans[2])
+                if trans[0] == str(i):  # Si une transition est liée à l'état observé
+                    trans_state_liste[alph_to_num(trans[1])] = str(trans[2])
                     x.add_row([io, i] + trans_state_liste)
-                    addedrow = True
-            if addedrow==False:
+                    added_row = True
+            if not added_row:
                 x.add_row([io, i] + trans_state_liste)
-
         print(x)
+        return
+
+    def isDeter(self):
+        return
+
+def str_to_int(lst):
+    int_liste = []
+    for elm in lst:
+        int_liste.append(int(elm))
+    return int_liste
 
 
-def str_to_int(list):
-    intliste = []
-    for elm in list:
-        intliste.append(int(elm))
-    return intliste
-
-def alph_to_num(lettre):
-    lettre = lettre.lower()  # Convertir en minuscule pour gérer les lettres majuscules
-    if lettre.isalpha() and len(lettre) == 1:  # Vérifier si la lettre est alphabétique et de longueur 1
-        return ord(lettre) - ord('a')  # Retourner le numéro correspondant
+def alph_to_num(letter):
+    letter = letter.lower()  # Convertir en minuscule pour gérer les lettres majuscules
+    if letter.isalpha() and len(letter) == 1:  # Vérifier si la lettre est alphabétique et de longueur 1
+        return ord(letter) - ord('a')  # Retourner le numéro correspondant
     else:
         raise ValueError("Entrée invalide: Veuillez entrer une seule lettre alphabétique")
 
 
-def alphaliste(n):
+def alphaListe(n):
     if n <= 0:
         return []
 
@@ -61,11 +65,11 @@ def alphaliste(n):
     return [alphabet[i] for i in range(n)]
 
 
-def lire_fichier_automate(nom_fichier):
+def importAutomate(nom_fichier):
     with open(nom_fichier, 'r') as fichier:
         lignes = fichier.readlines()
         alphabet = int(lignes[0].strip())  # Strip permet de supprimer les caractères de retour à la ligne
-        nb_etats = int(lignes[1].strip())
+        nb_state = int(lignes[1].strip())
         lst_init = str_to_int(lignes[2].split())  # Split forme une liste d'élément séparé d'espace
         nb_init = lst_init.pop(0)
         lst_term = str_to_int(lignes[3].split())
@@ -73,13 +77,13 @@ def lire_fichier_automate(nom_fichier):
         nb_trans = int(lignes[4].strip())
         lst_trans = []
         for i in range(5, len(lignes)):
-            newTrans = lignes[i].split()
-            lst_trans.append(newTrans)
-        automate = Automate(alphabet, nb_etats, nb_init, lst_init, nb_term, lst_term, nb_trans, lst_trans)
+            new_trans = lignes[i].split()
+            lst_trans.append(new_trans)
+        automate = Automate(alphabet, nb_state, nb_init, lst_init, nb_term, lst_term, nb_trans, lst_trans)
     return automate
 
 
 # Utilisation du programme
 if __name__ == '__main__':
-    newAuto = lire_fichier_automate("test.txt")
+    newAuto = importAutomate("test.txt")
     newAuto.show()
