@@ -49,6 +49,19 @@ class Automate:
                         return False
         return True
 
+    def isStandard(self):
+        if self.nb_init != 1:
+            return False
+        entrant_states = []
+        for trans in self.lst_trans:
+            entrant_states.append(int(trans[2]))
+
+        # Vérifier que l'unique état initial n'est pas une cible de transition
+        if self.lst_init[0] in entrant_states:
+            return False
+
+        return True
+
 
 def str_to_int(lst):
     int_liste = []
@@ -96,3 +109,4 @@ if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
     print(newAuto.isDeter())
+    print(newAuto.isStandard())
