@@ -17,7 +17,13 @@ class Automate:
         x.field_names = ["i/o", "state"] + alphaListe(self.alphabet)
 
         for i in range(self.nb_state):  # Pour chaque état
-            io = "i" if i in self.lst_init else "o" if i in self.lst_term else " "
+            io=""
+            if i in self.lst_init:
+                io += "i"
+            if i in self.lst_term:
+                io += "o"
+            if i not in self.lst_init and i not in self.lst_term:
+                io = " "
 
             # Création d'une liste vide pour les transitions de l'état actuel
             trans_state_liste = [' '] * self.alphabet
@@ -44,6 +50,24 @@ class Automate:
                 else:
                     return False
         return True
+
+    def addState(self):
+        self.nb_state += 1
+        self.lst_trans.append([]) # car sinon out of range
+
+    def addInput(self,state):
+        if state not in self.lst_init:
+            self.nb_init += 1
+            self.lst_init.append(state)
+        else:
+            print("déjà initial")
+
+    def addOutput(self,state):
+        if state not in self.lst_term:
+            self.nb_term += 1
+            self.lst_term.append(state)
+        else:
+            print("déjà initial")
 
     def isStandard(self):
         if self.nb_init != 1:
@@ -103,7 +127,7 @@ def importAutomate(nom_fichier):
         nb_trans = int(lignes[4].strip())
 
         # Initialisation de lst_trans comme une liste de liste vide
-        lst_trans = [[] for i in range(nb_state)]
+        lst_trans = [[] for _ in range(nb_state)]
 
         for i in range(5, len(lignes)):
             new_trans = lignes[i].split()
@@ -121,3 +145,8 @@ if __name__ == '__main__':
     print(newAuto.isDeter())
     print(newAuto.isStandard())
     print(newAuto.isComplete())
+    newAuto.addState()
+    newAuto.show()
+    newAuto.addInput(3)
+    newAuto.addOutput(0)
+    newAuto.show()
