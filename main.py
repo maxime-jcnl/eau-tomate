@@ -62,6 +62,20 @@ class Automate:
 
         return True
 
+    def isComplete(self):
+        state_transitions = [[] for i in range(self.nb_state)]
+        for trans in self.lst_trans:
+            state = trans[0]
+            symbol = trans[1]
+            state_transitions[int(state)].append(symbol)
+        for state_trans in state_transitions:
+            # Compter le nombre de transitions sortantes pour l'état
+            num_transitions = len(state_trans)
+            # Vérifier s'il manque des transitions pour certaines lettres de l'alphabet
+            if num_transitions < self.alphabet:
+                return False
+        return True
+
 
 def str_to_int(lst):
     int_liste = []
@@ -110,3 +124,4 @@ if __name__ == '__main__':
     newAuto.show()
     print(newAuto.isDeter())
     print(newAuto.isStandard())
+    print(newAuto.isComplete())

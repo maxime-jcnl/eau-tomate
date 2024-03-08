@@ -3,8 +3,8 @@
 ## Fonctionnalités à implémenter
 - [x] Lecture et affichage de l'automate
 - [x] Fonction de verification isDeter
-- [ ] Fonction isStandard
-- [ ] Fonction isComplete
+- [x] Fonction isStandard
+- [x] Fonction isComplete
 - [ ] Fonction standardisation
 - [ ] Fonction determinisation
 - [ ] Fonction de minimisation
