@@ -54,7 +54,7 @@ class Automate:
     def addState(self):
         self.nb_state += 1
         self.lst_trans.append([]) # car sinon out of range
-
+        return self.nb_state
     def addInput(self,state):
         if state not in self.lst_init:
             self.nb_init += 1
@@ -82,6 +82,31 @@ class Automate:
 
         return True
 
+    def standardize(self):
+
+        if self.isStandard():
+            print("Automate déjà standardisé")
+            return
+
+        c_trans=[]
+        c_state = self.addState()
+
+        #  Récupération des transitions qui concerne les états initiaux
+        for i in range(self.nb_state):
+            if i in self.lst_init:
+                for j in range(len(self.lst_trans[i])):
+                    c_trans.append(self.lst_trans[i][j])
+
+        self.nb_trans += len(c_trans)
+        self.nb_init = 1
+        self.lst_init = [c_state-1]
+
+        #  Modification des états de départ des transitions
+        for i in range(len(c_trans)):
+            c_trans[i][0] = str(c_state)
+        self.lst_trans[c_state-1] = c_trans
+
+
     def isComplete(self):
         for state_trans in self.lst_trans:
             # Compter le nombre de transitions sortantes pour l'état
@@ -91,7 +116,14 @@ class Automate:
                 return False
         return True
 
+    def addTrans(self,state,letter,dest):
+        new_trans=[state,letter,dest]
+        if new_trans in self.lst_trans[state]:
+            print("Transition déjà éxistente")
+            return
 
+        self.nb_trans += 1
+        self.lst_trans[state].append(new_trans)
 def str_to_int(lst):
     int_liste = []
     for elm in lst:
@@ -145,8 +177,9 @@ if __name__ == '__main__':
     print(newAuto.isDeter())
     print(newAuto.isStandard())
     print(newAuto.isComplete())
-    newAuto.addState()
     newAuto.show()
     newAuto.addInput(3)
     newAuto.addOutput(0)
+    newAuto.show()
+    newAuto.standardize()
     newAuto.show()
