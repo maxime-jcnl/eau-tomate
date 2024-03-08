@@ -2,7 +2,7 @@
 
 ## Fonctionnalités à implémenter
 - [x] Lecture et affichage de l'automate
-- [ ] Fonction de verification isDeter
+- [x] Fonction de verification isDeter
 - [ ] Fonction isStandard
 - [ ] Fonction isComplete
 - [ ] Fonction standardisation
