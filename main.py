@@ -13,40 +13,36 @@ class Automate:
         self.lst_trans = lst_trans
 
     def show(self):
-        global trans_state_liste
         x = PrettyTable()
         x.field_names = ["i/o", "state"] + alphaListe(self.alphabet)
 
-        for i in range(self.nb_state):  # On parcourt pour chaque état existant
-            # Vérification état initial final
-            if i in self.lst_init:
-                io = "i"
-            elif i in self.lst_term:
-                io = "o"
-            else:
-                io = " "
-            added_row = False
-            for trans in self.lst_trans:  # On parcourt toute la liste de transition
+        for i in range(self.nb_state):  # Pour chaque état
+            io = "i" if i in self.lst_init else "o" if i in self.lst_term else " "
 
-                trans_state_liste = [' '] * self.alphabet
-                if trans[0] == str(i):  # Si une transition est liée à l'état observé
+            # Création d'une liste vide pour les transitions de l'état actuel
+            trans_state_liste = [' '] * self.alphabet
+
+            # Récupération des transitions de l'état actuel depuis lst_trans
+            for trans in self.lst_trans[i]:
+                # Ajout de la destination à la liste des transitions
+                if trans_state_liste[alph_to_num(trans[1])] == ' ':
                     trans_state_liste[alph_to_num(trans[1])] = str(trans[2])
-                    x.add_row([io, i] + trans_state_liste)
-                    added_row = True
-            if not added_row:
-                x.add_row([io, i] + trans_state_liste)
+                else:
+                    trans_state_liste[alph_to_num(trans[1])] += ',' + str(trans[2])
+
+            # Ajout de la ligne dans la table
+            x.add_row([io, i] + trans_state_liste)
+
         print(x)
-        return
 
     def isDeter(self):
-        for states in range(self.nb_state):
+        for state_index in range(self.nb_state):
             trans_list = []
-            for trans in self.lst_trans:
-                if int(trans[0]) == states:
-                    if trans[1] not in trans_list:
-                        trans_list.append(trans[1])
-                    else:
-                        return False
+            for trans in self.lst_trans[state_index]:
+                if trans[1] not in trans_list:
+                    trans_list.append(trans[1])
+                else:
+                    return False
         return True
 
     def isStandard(self):
@@ -63,12 +59,7 @@ class Automate:
         return True
 
     def isComplete(self):
-        state_transitions = [[] for i in range(self.nb_state)]
-        for trans in self.lst_trans:
-            state = trans[0]
-            symbol = trans[1]
-            state_transitions[int(state)].append(symbol)
-        for state_trans in state_transitions:
+        for state_trans in self.lst_trans:
             # Compter le nombre de transitions sortantes pour l'état
             num_transitions = len(state_trans)
             # Vérifier s'il manque des transitions pour certaines lettres de l'alphabet
@@ -110,10 +101,15 @@ def importAutomate(nom_fichier):
         lst_term = str_to_int(lignes[3].split())
         nb_term = lst_term.pop(0)
         nb_trans = int(lignes[4].strip())
-        lst_trans = []
+
+        # Initialisation de lst_trans comme une liste de liste vide
+        lst_trans = [[] for i in range(nb_state)]
+
         for i in range(5, len(lignes)):
             new_trans = lignes[i].split()
-            lst_trans.append(new_trans)
+            state_index = int(new_trans[0])
+            lst_trans[state_index].append(new_trans)
+
         automate = Automate(alphabet, nb_state, nb_init, lst_init, nb_term, lst_term, nb_trans, lst_trans)
     return automate
 
