@@ -18,7 +18,6 @@ class Automate:
         x.field_names = ["i/o", "state"] + alphaListe(self.alphabet)
 
         for i in range(self.nb_state):  # On parcourt pour chaque état existant
-
             # Vérification état initial final
             if i in self.lst_init:
                 io = "i"
@@ -40,7 +39,16 @@ class Automate:
         return
 
     def isDeter(self):
-        return
+        for states in range(self.nb_state):
+            trans_list = []
+            for trans in self.lst_trans:
+                if int(trans[0]) == states:
+                    if trans[1] not in trans_list:
+                        trans_list.append(trans[1])
+                    else:
+                        return False
+        return True
+
 
 def str_to_int(lst):
     int_liste = []
@@ -87,3 +95,4 @@ def importAutomate(nom_fichier):
 if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
+    print(newAuto.isDeter())
