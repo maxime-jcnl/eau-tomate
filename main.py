@@ -109,6 +109,31 @@ class Automate:
             c_trans[i][0] = str(c_state)
         self.lst_trans[c_state - 1] = c_trans
 
+    def complete(self):
+        if self.isComplete():
+            print("L'automate est déjà complet.")
+            return
+
+        # Ajout de l'état poubelle
+        poubelle = self.addState()
+
+        # Ajout des transitions manquantes vers l'état poubelle
+        for state_index in range(self.nb_state):
+            for symbol in alphaListe(self.alphabet):
+                transition_exist = False
+                for trans in self.lst_trans[state_index]:
+                    if trans[1] == symbol:
+                        transition_exist = True
+                        break
+                if not transition_exist:
+                    self.addTrans(state_index, symbol, poubelle-1)
+
+        # Ajout des boucles sur l'état poubelle pour chaque symbole de l'alphabet
+        for symbol in alphaListe(self.alphabet):
+            self.addTrans(poubelle-1, symbol, poubelle-1)
+
+        print("Automate complété avec succès.")
+
     def isComplete(self):
         for state_trans in self.lst_trans:
             # Compter le nombre de transitions sortantes pour l'état
@@ -136,8 +161,8 @@ def str_to_int(lst):
 
 
 def alph_to_num(letter):
-    letter = letter.lower()  # Convertir en minuscule pour gérer les lettres majuscules
-    if letter.isalpha() and len(letter) == 1:  # Vérifier si la lettre est alphabétique et de longueur 1
+    letter = letter.lower()  # Converter en minuscule pour greyer les lettres majuscule
+    if letter.isalpha() and len(letter) == 1:  # Verifier si la letter est alphabetical et de longueur 1
         return ord(letter) - ord('a')  # Retourner le numéro correspondant
     else:
         raise ValueError("Entrée invalide: Veuillez entrer une seule lettre alphabétique")
@@ -178,7 +203,6 @@ def importAutomate(nom_fichier):
 if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
-    print(newAuto.isStandard())
-    newAuto.standardize()
+    print(newAuto.isComplete())
+    newAuto.complete()
     newAuto.show()
-    print(newAuto.isStandard())

@@ -11,6 +11,7 @@
 - [ ] Fonction de minimisation
 - [ ] Fonction de test de reconnaissance de mots
 - [ ] Fonction de génération de l'automate complémentaire
-
+## Fonctionnalités de menu
+- [ ] 
 ## Améliorations à apporter
 - [ ] Utilisation de dictionnaire imbriqués pour les états
