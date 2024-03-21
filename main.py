@@ -1,4 +1,5 @@
 from prettytable import PrettyTable
+from graphviz import Digraph
 
 
 class Automate:
@@ -11,6 +12,31 @@ class Automate:
         self.lst_term = lst_term
         self.nb_trans = nb_trans
         self.lst_trans = lst_trans
+
+    def draw_graph(self):
+        dot = Digraph()
+
+        # Ajouter les états initiaux et terminaux avec des notations spécifiques
+        for i in range(self.nb_state):
+            if i in self.lst_init and i in self.lst_term:
+                dot.node(str(i), str(i), shape='doublecircle', color='red')
+            elif i in self.lst_init:
+                dot.node(str(i), str(i), shape='circle', color='green')
+            elif i in self.lst_term:
+                dot.node(str(i), str(i), shape='doublecircle')
+            else:
+                dot.node(str(i), str(i))
+
+        # Ajouter les transitions
+        for i in range(self.nb_state):
+            for trans in self.lst_trans[i]:
+                start_state = str(trans[0])
+                end_state = str(trans[2])
+                label = str(trans[1])
+                dot.edge(start_state, end_state, label=label)
+
+        # Afficher le graphe
+        dot.render('automate_graph', view=True)
 
     def show(self):
         x = PrettyTable()
@@ -153,6 +179,7 @@ class Automate:
         self.lst_trans[state].append(new_trans)
 
 
+
 def str_to_int(lst):
     int_liste = []
     for elm in lst:
@@ -203,5 +230,6 @@ def importAutomate(nom_fichier):
 if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
-    print(newAuto.isComplete())
-
+    newAuto.draw_graph()
+    newAuto.complete()
+    newAuto.draw_graph()
