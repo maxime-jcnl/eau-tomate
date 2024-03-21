@@ -204,5 +204,4 @@ if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
     print(newAuto.isComplete())
-    newAuto.complete()
-    newAuto.show()
+
