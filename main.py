@@ -19,9 +19,9 @@ class Automate:
         for i in range(self.nb_state):  # Pour chaque état
             io = ""
             if i in self.lst_init:
-                io += "i"
+                io += "->"
             if i in self.lst_term:
-                io += "o"
+                io += "<-"
             if i not in self.lst_init and i not in self.lst_term:
                 io = " "
 
