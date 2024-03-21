@@ -77,6 +77,54 @@ class Automate:
                     return False
         return True
 
+    def determinize(self):
+        # Initialisation des structures pour l'AFD
+        new_states = [
+            [state for state in self.lst_init]]  # Liste des nouveaux états (sous-ensembles) avec les états initiaux
+        queue = [[state for state in self.lst_init]]  # File d'attente pour explorer les états
+        new_trans = []  # Transitions de l'AFD
+        new_lst_term = []  # États finaux de l'AFD
+
+        while queue:
+            current = queue.pop(0)
+            for symbol in alphaListe(self.alphabet):
+                reachable = []
+                for state in current:
+                    for trans in self.lst_trans[int(state)]:
+                        if trans[1] == symbol and trans[2] not in reachable:
+                            reachable.append(trans[2])
+
+                if reachable:
+                    # Vérifier si cet ensemble d'états n'existe pas encore dans new_states
+                    if not any([set(reachable) == set(state) for state in new_states]):
+                        new_states.append(reachable)
+                        queue.append(reachable)
+
+                    current_index = next(index for index, state in enumerate(new_states) if set(state) == set(current))
+                    reachable_index = next(
+                        index for index, state in enumerate(new_states) if set(state) == set(reachable))
+                    new_trans.append([current_index, symbol, reachable_index])
+
+                    if any(state in self.lst_term for state in reachable) and reachable_index not in new_lst_term:
+                        new_lst_term.append(reachable_index)
+
+        # Réinitialiser l'automate avec les nouvelles valeurs pour le rendre déterministe
+        self.lst_init = [0]  # Le nouvel état initial
+        self.nb_init = 1
+        self.lst_term = new_lst_term
+        self.nb_term = len(new_lst_term)
+        self.lst_trans = [[] for _ in range(len(new_states))]
+        for trans in new_trans:
+            self.lst_trans[trans[0]].append(trans)
+        self.nb_state = len(new_states)
+        self.nb_trans = len(new_trans)
+
+        # Ajustement des transitions pour utiliser des indices entiers
+        for state_index in range(len(self.lst_trans)):
+            for trans_index in range(len(self.lst_trans[state_index])):
+                start_state, symbol, end_state = self.lst_trans[state_index][trans_index]
+                self.lst_trans[state_index][trans_index] = [int(start_state), symbol, int(end_state)]
+
     def addState(self):
         self.nb_state += 1
         self.lst_trans.append([])  # car sinon out of range
@@ -230,6 +278,6 @@ def importAutomate(nom_fichier):
 if __name__ == '__main__':
     newAuto = importAutomate("test.txt")
     newAuto.show()
+    newAuto.determinize()
     newAuto.draw_graph()
-    newAuto.complete()
-    newAuto.draw_graph()
+
